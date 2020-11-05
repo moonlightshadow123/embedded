@@ -1,0 +1,2 @@
+"E:\\software\\arduino\\hardware\\tools\\avr\\avr\\include",
+                "E:\\software\\arduino\\libraries\\**",

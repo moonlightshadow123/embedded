@@ -1,0 +1,18 @@
+1、接线：
+
+接线说明，通过母对公杜邦线
+黑线/灰线   –  GND ，(Pin 6)
+红线           –  3V3， (Pin 1)
+黄/橙线      – GPIO 17，（Pin 11）
+
+2、程序部分
+创建文件：
+
+sudo nano servomotor.py
+
+代码见附件。
+
+3、测试运行：
+sudo python servomotor.py
+
+另：如果有震颤，可以调整p.ChangeDutyCycle(0)

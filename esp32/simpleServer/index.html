@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robo-Cam</title>
+	<script type='text/javascript' src='https://lib.baomitu.com/jquery/3.5.1/jquery.min.js'></script>
+	<style type='text/css'>
+		body{
+			margin: 0px;
+			background-color: gray;
+			width: 100%;
+		}
+		button{
+	    	background-color: #999999;
+	    	color: inherit;
+	    	border-radius: 8px;
+	    	outline: inherit;
+	    	padding: 3px;
+	    	font-size:4vh;
+			margin: 10px;
+			cursor: pointer;
+		}
+		button:active{
+			background-color: #333333;
+			color: #eeeeee;
+		}
+		.panel{
+			padding: 10px;
+			margin: 10px;
+		}
+		#control_box{
+			background-color: #333333;
+			z-index: 2;
+			opacity: 0.5;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<span id='toggler' style='position: absolute;top:10px;right: 10px;font-size: 4vh;z-index: 3;cursor: pointer;'>&#9776;</span>
+<div style='width: 100%; text-align: center;position: fixed;'>
+<div id='control_box' style='text-align: center;'>
+	<div class='panel' >
+		<button onclick='send("U");'>F</button> <button onclick='send("D");'>B</button> <button onclick='send("L");'>LM</button> <button onclick='send("R");'>RM</button>
+	</div>
+	<div class='panel' >
+		<button onclick='send("X");'>LT</button> <button onclick='send("B");'>RT</button> <button onclick='send("A");'>S</button>
+	</div>
+	<div class='panel'>
+		<button onclick='send("E");'>LC</button> <button onclick='send("F");'>RC</button>
+	</div>
+	<div class='panel' >
+		<button>UC</button> <button>DC</button>
+	</div>
+</div>
+</div>
+<div style='text-align: center;margin: 10px;'>
+	<img id='streamImg' src='/stream'  style='border: 1px solid gray;height: 90vmin'>
+</div>
+<script type='text/javascript'>
+	var img = document.getElementById('streamImg');
+	function send(char){
+		window.stop();
+    	var url = '/control?cmd=' + char;
+    	fetch(url).then((resp)=>{console.log(resp);img.src='/stream';});
+	}
+	$(function(){
+		$('#toggler').click(function(){
+			console.log('toggle!');
+			var $box = $('#control_box');
+			$('#control_box').slideToggle();
+		});
+	});
+</script>
+</body>
+</html>
