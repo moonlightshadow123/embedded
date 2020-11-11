@@ -1,5 +1,7 @@
 #include "TTP229Key.h"
 #include "OLED.h"
+#include "MY_NRF24L01.h"
+#include <printf.h>
 
 CTtP229TouchButton g_ttp229Button;
 #define TTP16Button g_ttp229Button
@@ -9,15 +11,21 @@ int highLight = 0;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  SPI.begin();
+  radio.begin();
+  network.begin(90, this_node); //(channel, node address)
 
   DEBUG_STATUS(Serial.println("TTP229 Capacitive Touch Keypad"));
   DEBUG_STATUS(Serial.println("------------------------------"));
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
 
   TTP16Button.Configure(SCLPin, SDAPin);
-  digitalWrite(LEDPin, LOW);             // default turn off output pin
-  pinMode(LEDPin, OUTPUT);               // configure an output test pin to respond on button 6 press/release
+  //digitalWrite(LEDPin, LOW);             // default turn off output pin
+  //pinMode(LEDPin, OUTPUT);               // configure an output test pin to respond on button 6 press/release
+  printf_begin();
+  radio.printDetails();
+  prt();
 }
 
 void TestStatus()
@@ -53,10 +61,12 @@ void TestEvent()
       else
       {
         DEBUG_STATUS(Serial.print("Button Pressed : "));
-        if (buttonEvent.ButtonNumber == 3) {
+        if (buttonEvent.ButtonNumber == 1) {
             if(highLight<3) highLight++;
-        }else if(buttonEvent.ButtonNumber == 4){
+        }else if(buttonEvent.ButtonNumber == 2){
             if(highLight>0) highLight--;
+        }else if(buttonEvent.ButtonNumber == 3){
+          request();  
         }
         prt();
       }
@@ -75,7 +85,7 @@ void TestEvent()
 }
 
 void prt(){
-  printContent("Message:", "D1", "D2", serialBuff, highLight);
+  printContent("Function:", "D1", "D2", serialBuff, highLight);
 }
 
 void loop()
@@ -88,4 +98,7 @@ void loop()
       serialBuff[i] = '\0';
       prt();
   }
+  prt();
+  receive();
+  delay(10);
 }
