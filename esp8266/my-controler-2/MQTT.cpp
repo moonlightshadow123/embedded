@@ -51,7 +51,7 @@ void callback(char * topic, byte* payload, unsigned int length){
     }
     Serial.println();
 }
-
+/*
 void setup(){
     Serial.begin(9600);
     setupWifi();
@@ -73,4 +73,4 @@ void loop(){
         client.publish(outTopic, message);
         lastTime = millis();
     }
-}
+}*/

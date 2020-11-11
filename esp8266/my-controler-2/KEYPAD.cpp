@@ -9,7 +9,6 @@ void Keypad::configure(){
   pinMode( PAD_SDA, INPUT);
 }
 
-
 uint16_t Keypad::readValue(){
 	uint16_t buttonPressed = 0;
 	for (uint16_t idx = 0; idx < KEYNUM; idx++ )

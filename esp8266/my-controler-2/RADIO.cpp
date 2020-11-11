@@ -1,9 +1,10 @@
 #include "RADIO.h"
 //#include <Arduino.h>
-
+//#include "SENSOR_BMP.h"
 
 //extern uint16_t this_node = 00;   // Address of this node in Octal format ( 04,031, etc)
 //extern int channel = 90;
+
 
 void radioBegin(int channel, uint16_t this_addr){
   Serial.print("0");
@@ -27,6 +28,7 @@ void recieve(callback func, char * payload){
     memset(payload, 0, sizeof(payload));
     RF24NetworkHeader header;
     network.read(header, payload, R_PL_LENGTH);
+    //network.read(header, payload, sizeof(BMP280Data));
     func(header.from_node, payload);
   }
 }
