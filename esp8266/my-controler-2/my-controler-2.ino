@@ -44,6 +44,7 @@ void setup(){
   Serial.println(result);
   keypad.configure();
   menu_config();
+  delay(100);
   mclient.begin();
   mclient.sub("msg/text");
   delay(100);

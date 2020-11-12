@@ -13,6 +13,7 @@
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 extern Adafruit_SSD1306 display;
 
-void printContent(char * title, char * line1, char * line2, char * line3, int highlight);
-void printLine(char * text, int num, int hightlight);
+void printMsg(const char * msg);
+void printContent(const char * title,const char * line1,const char * line2,const char * line3, int highlight);
+void printLine(const char * text, int num, int hightlight);
 #endif

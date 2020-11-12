@@ -22,7 +22,7 @@ class MqttClient{
   PubSubClient* client;
   MqttClient(In_cbk in_cbk);
   void begin();
-  void reconnect();
+  void reconnect(bool disp=false);
   void sub(const char * subTopic);
   void pub(const char * pubTopic, char * msg);
 };

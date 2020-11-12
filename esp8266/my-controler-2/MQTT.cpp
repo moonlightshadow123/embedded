@@ -1,4 +1,5 @@
 #include "MQTT.h"
+#include "OLED.h"
 
 WiFiClient espClient;
 
@@ -16,13 +17,15 @@ MqttClient::MqttClient(In_cbk in_cbk){
   this->in_cbk = in_cbk;
 }
 
-void MqttClient::reconnect(){
+void MqttClient::reconnect(bool disp){
    while(!this->client->connected()){
         Serial.print("\nConnecting to ");
         Serial.println(broker);
+        if(disp) printContent("Message:", "Conn to MQTT", broker, "", -1);
         if(this->client->connect(mqtt_id)){
             Serial.print("\nConnected to ");
             Serial.println(broker);
+            if(disp) printContent("Message:","Conned to MQTT", broker, "", -1);
             //if(strcmp(this->inTopic, "") != 0 && this->in_cbk != NULL)
               //this->client->subscribe(this->inTopic);
         }else{
@@ -36,6 +39,7 @@ void MqttClient::begin(){
   // WiFi
   Serial.print("\nConnecting to ");
   Serial.print(ssid);
+  printContent("Message:", "Conn to WiFi", ssid, "", -1);
   WiFi.begin(ssid, pass);
   while(WiFi.status() != WL_CONNECTED){
       delay(100);
@@ -43,10 +47,11 @@ void MqttClient::begin(){
   }
   Serial.print("\nConnected to ");
   Serial.print(ssid);
+  printContent("Message:", "Conned to WiFi", ssid, "", -1);
   // PubSub
   this->client->setServer(broker, 1883);
   this->client->setCallback(default_cbk);
-  this->reconnect();
+  this->reconnect(true);
 }
 
 void MqttClient::sub(const char * subTopic){
