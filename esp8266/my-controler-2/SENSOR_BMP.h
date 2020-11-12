@@ -8,9 +8,11 @@ class Menu;
 
 struct bmp280data{
   float temp;
-  float pressure;
+  float pres;
 };
 typedef struct bmp280data BMP280Data; 
+
+const char * const BMP_VOICE = "Your current temperature is %.2f, current pressure is %.2f";
 
 extern DataItem i_temp;
 extern DataItem i_pres;

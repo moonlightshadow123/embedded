@@ -1,10 +1,4 @@
 #include "RADIO.h"
-//#include <Arduino.h>
-//#include "SENSOR_BMP.h"
-
-//extern uint16_t this_node = 00;   // Address of this node in Octal format ( 04,031, etc)
-//extern int channel = 90;
-
 
 void radioBegin(int channel, uint16_t this_addr){
   Serial.print("0");

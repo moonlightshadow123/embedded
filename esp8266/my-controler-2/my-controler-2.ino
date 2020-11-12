@@ -11,6 +11,7 @@
 #include "KEYPAD.h"
 #include "MENU.h"
 #include "SENSOR_BMP.h"
+#include "MQTT.h"
 #include <printf.h>
 
 // OLED
@@ -27,6 +28,9 @@ const uint16_t bmp_addr = 01;
 // KEYPAD
 Keypad keypad = Keypad();
 
+// MQTT
+MqttClient mclient(NULL);
+
 void setup(){
   Serial.begin(115200);
   bool ok = display.begin(SSD1306_SWITCHCAPVCC, 0x3C, false);
@@ -40,7 +44,9 @@ void setup(){
   Serial.println(result);
   keypad.configure();
   menu_config();
-  delay(1000);
+  mclient.begin();
+  mclient.sub("msg/text");
+  delay(100);
 }
 
 void rcv_cbk(uint16_t addr, char * pl){
@@ -49,22 +55,20 @@ void rcv_cbk(uint16_t addr, char * pl){
     //Serial.println((*(float*)pl));
     BMP280Data* bdata = (BMP280Data*)pl;
     /*Serial.printf("%x", bdata);*/
-    Serial.println(bdata->temp);
+    float temp = bdata->temp;
+    float pres = bdata->pres;
+    Serial.println(temp);
     Serial.print(";");
-    Serial.println(bdata->pressure);
+    Serial.println(pres);
     //delay(10);
-    i_temp.prtData(bdata->temp);
-    i_pres.prtData(bdata->pressure);
+    i_temp.prtData(temp);
+    i_pres.prtData(pres);
     menu.jump_to(&i_bmp);
+    // Voice 
+    char voice[40] = {0};
+    sprintf(voice, BMP_VOICE, temp, pres);
+    mclient.pub(voiceTopic, voice);
   }
-}
-
-void bmp_prt(float temp, float pressure){
-  char line1[20];
-  char line2[20];
-  sprintf(line1, "Temp: %.2f", temp);
-  sprintf(line2, "Pres: %.2f", pressure);
-  printContent("Message: ", line1, line2, "", -1);
 }
 
 void key_func(uint16_t key){

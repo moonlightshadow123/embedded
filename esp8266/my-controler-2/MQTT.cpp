@@ -1,19 +1,65 @@
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-
-const char * ssid = "helloworld";
-const char * pass = "zhang306";
-const char * broker = "192.168.0.100";
-const char * outTopic = "test/out";
-const char * inTopic = "test/in";
+#include "MQTT.h"
 
 WiFiClient espClient;
-PubSubClient client(espClient);
-long currentTime, lastTime;
-int count = 0;
-char message[50];
 
+void default_cbk(char * topic, byte* payload, unsigned int length){
+    Serial.print("Received Message from Topic: ");
+    Serial.println(topic);
+    for(int i=0; i<length; i++){
+        Serial.print((char)payload[i]);
+    }
+    Serial.println();
+}
+
+MqttClient::MqttClient(In_cbk in_cbk){
+  this->client = new PubSubClient(espClient);
+  this->in_cbk = in_cbk;
+}
+
+void MqttClient::reconnect(){
+   while(!this->client->connected()){
+        Serial.print("\nConnecting to ");
+        Serial.println(broker);
+        if(this->client->connect(mqtt_id)){
+            Serial.print("\nConnected to ");
+            Serial.println(broker);
+            //if(strcmp(this->inTopic, "") != 0 && this->in_cbk != NULL)
+              //this->client->subscribe(this->inTopic);
+        }else{
+            Serial.print("/nTrying to connect again...");
+            delay(1000);
+        }
+    }
+}
+
+void MqttClient::begin(){
+  // WiFi
+  Serial.print("\nConnecting to ");
+  Serial.print(ssid);
+  WiFi.begin(ssid, pass);
+  while(WiFi.status() != WL_CONNECTED){
+      delay(100);
+      Serial.print("-");
+  }
+  Serial.print("\nConnected to ");
+  Serial.print(ssid);
+  // PubSub
+  this->client->setServer(broker, 1883);
+  this->client->setCallback(default_cbk);
+  this->reconnect();
+}
+
+void MqttClient::sub(const char * subTopic){
+  this->reconnect();
+  this->client->subscribe(subTopic);
+}
+
+void MqttClient::pub(const char * pubTopic, char * msg){
+  this->reconnect();
+  this->client->publish(pubTopic, msg);
+}
+
+/*
 void setupWifi(){
     delay(100);
     Serial.print("\nConnecting to ");
